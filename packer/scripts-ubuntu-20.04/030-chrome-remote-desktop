@@ -1,0 +1,43 @@
+#!/bin/bash
+
+export DEBIAN_FRONTEND=noninteractive
+
+#wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
+curl --silent -o "/tmp/chrome-remote-desktop_current_amd64.deb" -L "https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
+dpkg --install /tmp/chrome-remote-desktop_current_amd64.deb
+apt-get -qqy install --fix-broken                                       
+# this installs "xbase-clients xvfb" after an "xfce4 desktop-base" install
+# this installs "x11-apps x11-session-utils xbase-clients xbitmaps xinit xvfb" after a "cinnamon-desktop-environment" install
+# this installs "python3-psutil x11-apps x11-session-utils xbase-clients xbitmaps xinit xvfb" after a "kde-plasma-desktop" install
+# this installs "python3-psutil xbase-clients xvfb" after a full-on "kubuntu-desktop" install
+
+default_gnome() {
+  echo "exec /etc/X11/Xsession /usr/bin/gnome-session" > /etc/chrome-remote-desktop-session
+}
+
+default_xfce4() {
+  echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session
+}
+
+default_cinnamon() {
+  echo "exec /etc/X11/Xsession /usr/bin/cinnamon-session-cinnamon2d" > /etc/chrome-remote-desktop-session
+}
+
+default_plasma() {
+  echo "exec /etc/X11/Xsession /usr/bin/plasma_session" > /etc/chrome-remote-desktop-session
+}
+
+case "$DESKTOP" in
+  "kubuntu") default_plasma
+    ;;
+  "plasma") default_plasma
+    ;;
+  "cinnamon") default_cinnamon
+    ;;
+  "xfce4") default_xfce4
+    ;;
+  "gnome") default_gnome
+    ;;
+  *) echo "no desktop specified"
+    ;;
+esac

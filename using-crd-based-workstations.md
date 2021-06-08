@@ -101,7 +101,7 @@ access to be configured below.
 
 Open a browser and sign in and authorize
 
-[Chrome Remote Desktop Configuration](https://chrome-remote-desktop.google.com/headless)
+[Chrome Remote Desktop Configuration](https://remotedesktop.google.com/headless)
 
 Copy the activation command for "Linux" that we'll past into the workstation below.
 

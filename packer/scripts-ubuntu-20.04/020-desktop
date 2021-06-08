@@ -1,0 +1,67 @@
+#!/bin/bash
+
+export DEBIAN_FRONTEND=noninteractive
+
+install_xfce4_desktop() {
+  echo "installing xfce4 desktop"
+  apt-get -qqy install xfce4 desktop-base
+
+  rm -f /etc/xdg/autostart/{light-locker,xscreensaver}.desktop
+}
+
+install_cinnamon_desktop() {
+  echo "installing cinnamon desktop"
+  apt-get -qqy install cinnamon-desktop-environment
+
+  # disable the screensaver
+  apt-get -y purge gnome-screensaver
+  chmod -wx /usr/bin/cinnamon-screensaver
+}
+
+install_plasma_desktop() {
+  echo "installing plasma desktop"
+  apt-get -qqy install kde-plasma-desktop
+
+  # fix screenlock "issues"
+  mkdir -p /etc/skel/.config
+  cat <<- 'EOS' > /etc/skel/.config/kscreenlockerrc
+[Daemon]
+Autolock[$i]=false
+LockOnResume[$i]=false
+EOS
+}
+
+install_kubuntu_desktop() {
+  echo "installing kubuntu desktop"
+  apt-get -qqy install kubuntu-desktop
+
+  # fix screenlock "issues"
+  cat <<- 'EOS' > /etc/skel/.config/kscreenlockerrc
+[Daemon]
+Autolock[$i]=false
+LockOnResume[$i]=false
+EOS
+
+  # requires password auth to manage networkmanager... no need on the cloud
+  apt-get -y purge plasma-nm
+}
+
+install_gnome_desktop() {
+  echo "installing gnome desktop"
+  apt-get -qqy install ubuntu-desktop
+}
+
+case "$DESKTOP" in
+  "kubuntu") install_kubuntu_desktop
+    ;;
+  "plasma") install_plasma_desktop
+    ;;
+  "cinnamon") install_cinnamon_desktop
+    ;;
+  "xfce4") install_xfce4_desktop
+    ;;
+  "gnome") install_gnome_desktop
+    ;;
+  *) echo "no desktop specified"
+    ;;
+esac

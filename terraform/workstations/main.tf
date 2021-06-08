@@ -17,13 +17,17 @@ locals {
   master_os_image = "ubuntu-os-cloud/ubuntu-2004-lts"
 
   kubuntu_count = 1
-  kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd"
+  #kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd"
+  kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd-20210608020043"
   xfce4_count = 1
-  xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd"
+  #xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd"
+  xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd-20210608020043"
   cinnamon_count = 1
-  cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd"
+  #cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd"
+  cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd-20210608020043"
   plasma_count = 1
-  plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd"
+  #plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd"
+  plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd-20210608020043"
 }
 
 #data "terraform_remote_state" "storage" {

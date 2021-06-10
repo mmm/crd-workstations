@@ -22,7 +22,15 @@ locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }
 
-source "googlecompute" "gcp_ubuntu" {
+source "googlecompute" "gcp_ubuntu_focal" {
+  disk_size           = "100"
+  machine_type        = "n2-standard-4"
+  project_id          = "${var.gcp_project_id}"
+  source_image_family = "ubuntu-2004-lts"
+  ssh_username        = "packer"
+  zone                = "us-central1-f"
+}
+source "googlecompute" "gcp_ubuntu_hirsute" {
   disk_size           = "100"
   machine_type        = "n2-standard-4"
   project_id          = "${var.gcp_project_id}"
@@ -31,14 +39,20 @@ source "googlecompute" "gcp_ubuntu" {
   zone                = "us-central1-f"
 }
 
+
 build {
   name                = "kubuntu"
 
-  source "source.googlecompute.gcp_ubuntu" {
+  source "source.googlecompute.gcp_ubuntu_focal" {
     image_family        = "ubuntu-2004-kubuntu-crd"
     image_name          = "ubuntu-2004-kubuntu-crd-${local.timestamp}"
     image_description   = "kubuntu crd workstation image"
   }
+  #source "source.googlecompute.gcp_ubuntu_hirsute" {
+    #image_family        = "ubuntu-2104-kubuntu-crd"
+    #image_name          = "ubuntu-2104-kubuntu-crd-${local.timestamp}"
+    #image_description   = "kubuntu crd workstation image"
+  #}
 
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; sudo bash -c 'DESKTOP=kubuntu {{ .Vars }} {{ .Path }}'"
@@ -49,11 +63,16 @@ build {
 build {
   name                = "cinnamon"
 
-  source "source.googlecompute.gcp_ubuntu" {
+  source "source.googlecompute.gcp_ubuntu_focal" {
     image_family        = "ubuntu-2004-cinnamon-crd"
     image_name          = "ubuntu-2004-cinnamon-crd-${local.timestamp}"
     image_description   = "ubuntu cinnamon crd workstation image"
   }
+  #source "source.googlecompute.gcp_ubuntu_hirsute" {
+    #image_family        = "ubuntu-2104-cinnamon-crd"
+    #image_name          = "ubuntu-2104-cinnamon-crd-${local.timestamp}"
+    #image_description   = "ubuntu cinnamon crd workstation image"
+  #}
 
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; sudo bash -c 'DESKTOP=cinnamon {{ .Vars }} {{ .Path }}'"
@@ -64,7 +83,7 @@ build {
 build {
   name                = "plasma"
 
-  source "source.googlecompute.gcp_ubuntu" {
+  source "source.googlecompute.gcp_ubuntu_focal" {
     image_family        = "ubuntu-2004-plasma-crd"
     image_name          = "ubuntu-2004-plasma-crd-${local.timestamp}"
     image_description   = "ubuntu plasma crd workstation image"
@@ -79,7 +98,7 @@ build {
 build {
   name                = "xfce4"
 
-  source "source.googlecompute.gcp_ubuntu" {
+  source "source.googlecompute.gcp_ubuntu_focal" {
     image_family        = "ubuntu-2004-xfce4-crd"
     image_name          = "ubuntu-2004-xfce4-crd-${local.timestamp}"
     image_description   = "ubuntu xfce4 crd workstation image"

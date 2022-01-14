@@ -16,18 +16,16 @@
 locals {
   master_os_image = "ubuntu-os-cloud/ubuntu-2004-lts"
 
-  kubuntu_count = 1
-  #kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd"
-  kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd-20210608020043"
-  xfce4_count = 1
-  #xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd"
-  xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd-20210608020043"
-  cinnamon_count = 1
-  #cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd"
-  cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd-20210608020043"
+  kubuntu_count = 0
+  kubuntu_image = "mmm-goog-ad-eda-crd/ubuntu-2004-kubuntu-crd"
+  xfce4_count = 0
+  xfce4_image = "mmm-goog-ad-eda-crd/ubuntu-2004-xfce4-crd"
+  cinnamon_count = 0
+  cinnamon_image = "mmm-goog-ad-eda-crd/ubuntu-2004-cinnamon-crd"
   plasma_count = 1
-  #plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd"
-  plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd-20210608020043"
+  plasma_image = "mmm-goog-ad-eda-crd/ubuntu-2004-plasma-crd"
+  gnome_count = 1
+  gnome_image = "mmm-goog-ad-eda-crd/ubuntu-2004-gnome-crd"
 }
 
 #data "terraform_remote_state" "storage" {
@@ -52,9 +50,9 @@ resource "google_compute_instance" "workstation" {
 
     }
   }
-  scratch_disk {
-    interface = "NVME" # Note: check if your OS image requires additional drivers or config to optimize NVME performance
-  }
+  #scratch_disk {
+    #interface = "NVME" # Note: check if your OS image requires additional drivers or config to optimize NVME performance
+  #}
   metadata = {
     enable-oslogin = "TRUE"
   }
@@ -223,6 +221,40 @@ resource "google_compute_instance" "xfce4_workstation" {
   boot_disk {
     initialize_params {
       image = local.xfce4_image
+
+    }
+  }
+  metadata = {
+    enable-oslogin = "TRUE"
+  }
+
+  network_interface {
+    network = var.network
+    access_config {} # Ephemeral IP
+  }
+
+  metadata_startup_script = templatefile("provision.sh.tmpl", {
+    home_ip = "", #data.terraform_remote_state.storage.outputs.home-volume-ip-addresses[0],
+    tools_ip = "", #data.terraform_remote_state.storage.outputs.tools-volume-ip-addresses[0],
+  })
+
+  service_account {
+    #scopes = ["userinfo-email", "compute-ro", "storage-full"]
+    scopes = ["cloud-platform"]  # too permissive for production
+  }
+}
+
+resource "google_compute_instance" "gnome_workstation" {
+  count        = local.gnome_count
+  name         = "gnome-workstation-${count.index}"
+  machine_type = "n2-standard-4"
+  zone         = var.zone
+
+  tags = var.tags
+
+  boot_disk {
+    initialize_params {
+      image = local.gnome_image
 
     }
   }

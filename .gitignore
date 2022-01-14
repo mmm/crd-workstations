@@ -1,6 +1,7 @@
 tmp/
 **/dev*.tfvars
 variables.json
+*.pem
 
 # Local .terraform directories
 **/.terraform/*

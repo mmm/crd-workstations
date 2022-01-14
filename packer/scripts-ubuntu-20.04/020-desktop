@@ -62,7 +62,44 @@ EOS
 
 install_gnome_desktop() {
   echo "installing gnome desktop"
-  apt-get -qqy install ubuntu-desktop
+  apt-get -qqy install ubuntu-desktop-minimal
+
+  systemctl set-default graphical.target
+
+  # fix screensaver lock
+  mkdir -p /etc/dconf/db/local.d/
+  cat <<- 'EOS' > /etc/dconf/db/local.d/00-screensaver
+[org/gnome/desktop/session]
+idle-delay=uint32 0
+
+[org/gnome/desktop/screensaver]
+lock-enabled=false
+lock-delay=uint32 0
+EOS
+
+  # make that mandatory
+  mkdir -p /etc/dconf/db/local.d/locks/
+  cat <<- 'EOS' > /etc/dconf/db/local.d/locks/screensaver
+/org/gnome/desktop/session/idle-delay
+/org/gnome/desktop/screensaver/lock-enabled
+/org/gnome/desktop/screensaver/lock-delay
+EOS
+
+  # fix polkit "issues"
+  cat <<- 'EOS' > /etc/polkit-1/localauthority.conf.d/02-allow-colord.conf
+polkit.addRule(function(action, subject) {
+ if ((action.id == "org.freedesktop.color-manager.create-device" ||
+ action.id == "org.freedesktop.color-manager.create-profile" ||
+ action.id == "org.freedesktop.color-manager.delete-device" ||
+ action.id == "org.freedesktop.color-manager.delete-profile" ||
+ action.id == "org.freedesktop.color-manager.modify-device" ||
+ action.id == "org.freedesktop.color-manager.modify-profile") &&
+ subject.isInGroup("{users}")) {
+ return polkit.Result.YES;
+ }
+});
+EOS
+
 }
 
 case "$DESKTOP" in

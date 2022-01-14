@@ -32,6 +32,21 @@ source "googlecompute" "gcp_ubuntu" {
 }
 
 build {
+  name                = "gnome"
+
+  source "source.googlecompute.gcp_ubuntu" {
+    image_family        = "ubuntu-2004-gnome-crd"
+    image_name          = "ubuntu-2004-gnome-crd-${local.timestamp}"
+    image_description   = "gnome crd workstation image"
+  }
+
+  provisioner "shell" {
+    execute_command = "chmod +x {{ .Path }}; sudo bash -c 'DESKTOP=gnome {{ .Vars }} {{ .Path }}'"
+    scripts         = fileset(".", "scripts-ubuntu-20.04/*")
+  }
+}
+
+build {
   name                = "kubuntu"
 
   source "source.googlecompute.gcp_ubuntu" {

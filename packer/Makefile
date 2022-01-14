@@ -28,11 +28,11 @@ debug: build_gcp_debug
 
 build_gcp:
 	@echo "---" $@ "---"
-	@time packer build -var-file=variables.json -on-error=ask gcp.json.pkr.hcl
+	@time packer build -var-file=variables.json -on-error=ask gcp.pkr.hcl
 
 build_gcp_debug:
 	@echo "---" $@ "---"
-	@time packer build -var-file=variables.json -debug -on-error=ask gcp.json.pkr.hcl
+	@time packer build -var-file=variables.json -debug -on-error=ask gcp.pkr.hcl
 
 publish:
 	@echo "---" $@ "---"

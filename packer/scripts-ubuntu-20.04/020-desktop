@@ -20,6 +20,8 @@ install_xfce4_desktop() {
   echo "installing xfce4 desktop"
   apt-get -qqy install xfce4 desktop-base
 
+  # alternatively install `xubuntu-desktop` (which includes xfce4)
+
   rm -f /etc/xdg/autostart/{light-locker,xscreensaver}.desktop
 }
 
@@ -36,6 +38,8 @@ install_plasma_desktop() {
   echo "installing plasma desktop"
   apt-get -qqy install kde-plasma-desktop
 
+  # optionally install either `kde-standard` or `kde-full`
+
   # fix screenlock "issues"
   mkdir -p /etc/skel/.config
   cat <<- 'EOS' > /etc/skel/.config/kscreenlockerrc
@@ -48,6 +52,8 @@ EOS
 install_kubuntu_desktop() {
   echo "installing kubuntu desktop"
   apt-get -qqy install kubuntu-desktop
+
+  # optionally install either `kde-standard` or `kde-full`
 
   # fix screenlock "issues"
   cat <<- 'EOS' > /etc/skel/.config/kscreenlockerrc
@@ -63,6 +69,8 @@ EOS
 install_gnome_desktop() {
   echo "installing gnome desktop"
   apt-get -qqy install ubuntu-desktop-minimal
+
+  # alternatively just install a minimal gnome desktop by installing `gnome-session` and `gnome-terminal`
 
   systemctl set-default graphical.target
 
@@ -102,6 +110,15 @@ EOS
 
 }
 
+# others...
+# apt install ubuntu-mate-desktop
+# apt install lxde
+# apt install lxqt
+# apt install ubuntu-budgie-desktop
+#
+# note that choices can be managed using `update-alternatives`
+# a la https://bytexd.com/switch-desktop-environments-ubuntu-debian-commandline/
+#
 case "$DESKTOP" in
   "kubuntu") install_kubuntu_desktop
     ;;
